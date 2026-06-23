@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 
 public class BuildManager : MonoBehaviour
 /*
@@ -27,6 +28,12 @@ public class BuildManager : MonoBehaviour
 
     private void Update()
     {
+        if (IsPointerOverUI())
+    {
+        HidePreview();
+        return;
+    }
+        
         UpdatePreview();
 
         if (WasPrimaryReleasedThisFrame())
@@ -43,6 +50,14 @@ public class BuildManager : MonoBehaviour
     {
         selectedBuilding = null;
         DestroyPreview();
+    }
+    
+    private void HidePreview()
+    {
+        if (preview != null)
+            preview.SetActive(false);
+
+        previewIsValid = false;
     }
 
     public bool TryPlaceSelected()
@@ -169,4 +184,24 @@ public class BuildManager : MonoBehaviour
         foreach (Renderer renderer in preview.GetComponentsInChildren<Renderer>())
             renderer.sharedMaterial = material;
     }
+
+    private bool IsPointerOverUI()
+{
+    if (EventSystem.current == null)
+        return false;
+
+    if (Mouse.current != null && Mouse.current.leftButton.isPressed)
+        return EventSystem.current.IsPointerOverGameObject();
+
+    if (Touchscreen.current != null)
+    {
+        foreach (var touch in Touchscreen.current.touches)
+        {
+            if (touch.press.isPressed)
+                return EventSystem.current.IsPointerOverGameObject(touch.touchId.ReadValue());
+        }
+    }
+
+    return false;
+}
 }
