@@ -9,7 +9,7 @@ onBoardingDoNotAskAgain = true
 showPackageIndexes = false
 showStatusBar = false
 scopes = {
-	"last_search.66F56946" = "player settings"
+	"last_search.66F56946" = "horizon"
 	"OpenInspectorPreview.66F56946" = "0"
 	"currentGroup.66F56946" = "all"
 	"picker_window_position_offset.00000000" = "898;62;320;550"
@@ -77,6 +77,7 @@ providers = {
 objectSelectors = {
 }
 recentSearches = [
+	"hori"
 	"player"
 ]
 searchItemFavorites = [
