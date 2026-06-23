@@ -1276,6 +1276,7 @@ GameObject:
   m_Component:
   - component: {fileID: 717224608}
   - component: {fileID: 717224609}
+  - component: {fileID: 717224610}
   m_Layer: 0
   m_Name: "\U0001FA9F CityGrid"
   m_TagString: Untagged
@@ -1311,10 +1312,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CityGrid
   size: {x: 128, y: 128}
-  cellSize: 1
+  cellSize: 4
   terrainMask:
     serializedVersion: 2
     m_Bits: 8
+--- !u!114 &717224610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 717224607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0012559aa3ca55942ba1f25a1bc42ece, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CityGridVisualizer
+  showGrid: 1
+  yOffset: 0.02
+  lineColor: {r: 1, g: 0, b: 0, a: 0.4392157}
+  lineMaterial: {fileID: 0}
 --- !u!1 &750338241
 GameObject:
   m_ObjectHideFlags: 0
