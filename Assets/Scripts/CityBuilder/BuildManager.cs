@@ -101,7 +101,12 @@ public class BuildManager : MonoBehaviour
             return false;
         }
 
-        GameObject placedObject = Instantiate(selectedBuilding.prefab, grid.CellToWorld(previewCell), Quaternion.identity, buildingsParent);
+        GameObject placedObject = Instantiate(
+            selectedBuilding.prefab, 
+            GetFootprintCenterWorld(previewCell, selectedBuilding.footprint), 
+            Quaternion.identity, 
+            buildingsParent
+        );
         BuildingInstance instance = placedObject.GetComponent<BuildingInstance>();
 
         if (instance == null)
@@ -132,8 +137,21 @@ public class BuildManager : MonoBehaviour
         if (preview == null)
             return;
 
-        bool hasPointerCell = TryGetPointerCell(out previewCell);
-        previewIsValid = hasPointerCell && grid.CanPlace(previewCell, selectedBuilding.footprint) && (resources == null || resources.CanAfford(selectedBuilding.buildCost));
+        bool hasPointerCell = TryGetPointerCell(out Vector2Int mouseCell);
+
+        if (hasPointerCell)
+        {
+            previewCell = GetCenteredOriginCell(
+                mouseCell,
+                selectedBuilding.footprint
+            );
+        }
+
+        previewIsValid = 
+        hasPointerCell && 
+        grid.CanPlace(previewCell, selectedBuilding.footprint) && 
+        (resources == null || resources.CanAfford(selectedBuilding.buildCost));
+
         preview.SetActive(hasPointerCell);
 
         if (!preview.activeSelf)
@@ -142,7 +160,11 @@ public class BuildManager : MonoBehaviour
                 return;
             }
 
-        preview.transform.position = grid.CellToWorld(previewCell);
+        preview.transform.position = GetFootprintCenterWorld(
+            previewCell,
+            selectedBuilding.footprint
+        ); // Now uses centred Footprint.
+
         ApplyPreviewMaterial(previewIsValid ? validPreviewMaterial : invalidPreviewMaterial);
 
         UpdateFootprintCells(
@@ -314,6 +336,33 @@ public class BuildManager : MonoBehaviour
             if (footprintMarkers[i] != null)
                 footprintMarkers[i].SetActive(false);
         }
+    }
+
+    private Vector2Int GetCenteredOriginCell(Vector2Int mouseCell, Vector2Int footprint) // Calcs Centred origin from footprint and mouselocation.
+    {
+        return new Vector2Int(
+            mouseCell.x - footprint.x / 2,
+            mouseCell.y - footprint.y / 2
+        );
+    }
+
+    private Vector3 GetFootprintCenterWorld(Vector2Int origin, Vector2Int footprint) // Returns centre of entire footprint.
+    /*
+        1 x 1: center is the origin cell
+        2 x 2: center is between 4 cells
+        3 x 3: center is the middle cell
+        4 x 4: center is between 4 middle cells
+    */
+    {
+        Vector3 originWorld = grid.CellToWorld(origin);
+
+        Vector3 localOffset = new Vector3(
+            (footprint.x - 1) * grid.cellSize * 0.5f,
+            0f,
+            (footprint.y - 1) * grid.cellSize * 0.5f
+        );
+
+        return originWorld + grid.transform.TransformVector(localOffset);
     }
 
 }
