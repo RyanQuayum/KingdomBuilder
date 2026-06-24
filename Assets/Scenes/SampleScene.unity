@@ -1268,6 +1268,10 @@ MonoBehaviour:
   selectedBuilding: {fileID: 0}
   validPreviewMaterial: {fileID: 2100000, guid: 487d3b7144d1c6f40b23370732da67b4, type: 2}
   invalidPreviewMaterial: {fileID: 2100000, guid: 0a82804956e5090469a5648eb30b9e97, type: 2}
+  showFootprintCells: 1
+  footprintYOffset: 0.04
+  validFootprintMaterial: {fileID: 2100000, guid: cc9658fde7c242443a47935fd307ee74, type: 2}
+  invalidFootprintMaterial: {fileID: 2100000, guid: 3ea4a82f14b1e674182644e142fbf0c3, type: 2}
 --- !u!1 &676291489
 GameObject:
   m_ObjectHideFlags: 0
@@ -1609,6 +1613,7 @@ GameObject:
   - component: {fileID: 750338244}
   - component: {fileID: 750338243}
   - component: {fileID: 750338245}
+  - component: {fileID: 750338246}
   m_Layer: 5
   m_Name: BuildMenuPanel
   m_TagString: Untagged
@@ -1701,6 +1706,19 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &750338246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 750338241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7887cda63208c949846b78f5dd74837, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ScrollViewVisable
+  scrollViewObject: {fileID: 1856870129}
 --- !u!1 &789145721
 GameObject:
   m_ObjectHideFlags: 0
@@ -1842,7 +1860,7 @@ GameObject:
   - component: {fileID: 980051873}
   - component: {fileID: 980051872}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: "\U0001F3F3\uFE0F Canvas"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2003,7 +2021,7 @@ RectTransform:
   m_Father: {fileID: 1239690245}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -2131,6 +2149,18 @@ MonoBehaviour:
       - m_Target: {fileID: 601429161}
         m_TargetAssemblyTypeName: BuildManager, Assembly-CSharp
         m_MethodName: CancelPlacement
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 750338246}
+        m_TargetAssemblyTypeName: ScrollViewVisable, Assembly-CSharp
+        m_MethodName: DisableScroll
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2458,10 +2488,10 @@ RectTransform:
   - {fileID: 129477818}
   m_Father: {fileID: 1659002444}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 100, y: -35}
+  m_SizeDelta: {x: 200, y: 70}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1393656252
 MonoBehaviour:
@@ -2762,6 +2792,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 750338246}
+        m_TargetAssemblyTypeName: ScrollViewVisable, Assembly-CSharp
+        m_MethodName: EnableScroll
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1423772667
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2916,7 +2958,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0.000115354116, y: 0}
-  m_SizeDelta: {x: 0, y: 70}
+  m_SizeDelta: {x: -4, y: 70}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1659002445
 MonoBehaviour:
@@ -3213,12 +3255,12 @@ GameObject:
   - component: {fileID: 1856870132}
   - component: {fileID: 1856870131}
   m_Layer: 5
-  m_Name: Scroll View
+  m_Name: Buildings Scroll View
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1856870130
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3343,10 +3385,10 @@ RectTransform:
   - {fileID: 1694152453}
   m_Father: {fileID: 1659002444}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 310, y: -35}
+  m_SizeDelta: {x: 200, y: 70}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1868249436
 MonoBehaviour:
