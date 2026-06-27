@@ -4,7 +4,7 @@ using UnityEngine;
 public class CityGridVisualizer : MonoBehaviour
 {
     [Header("Runtime Grid")]
-    public bool showGrid = true;
+    public bool showGrid = false;
     public float yOffset = 0.02f;
     public Color lineColor = new Color(1f, 1f, 1f, 0.35f);
     public Material lineMaterial;
@@ -22,11 +22,22 @@ public class CityGridVisualizer : MonoBehaviour
         grid = GetComponent<CityGrid>();
         EnsureGridRenderer();
         RebuildGrid();
+        Debug.Log($"showGrid = {showGrid}");
     }
 
-    private void OnEnable()
+    // private void OnEnable()
+    // {
+    //     SetGridVisible(showGrid);
+    // }
+
+    public void disableGrid()
     {
-        SetGridVisible(showGrid);
+        SetGridVisible(false);
+    }
+
+    public void enableGrid()
+    {
+        SetGridVisible(true);
     }
 
     private void OnValidate()

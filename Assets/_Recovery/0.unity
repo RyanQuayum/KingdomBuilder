@@ -1605,7 +1605,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CityGridVisualizer
   showGrid: 1
   yOffset: 0.02
-  lineColor: {r: 0.7830189, g: 0, b: 0.32839885, a: 0.4392157}
+  lineColor: {r: 1, g: 1, b: 1, a: 0.4392157}
   lineMaterial: {fileID: 0}
 --- !u!1 &750338241
 GameObject:
@@ -2416,6 +2416,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 717224610}
+        m_TargetAssemblyTypeName: CityGridVisualizer, Assembly-CSharp
+        m_MethodName: disableGrid
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1239187577
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3049,6 +3061,18 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 717224610}
+        m_TargetAssemblyTypeName: CityGridVisualizer, Assembly-CSharp
+        m_MethodName: enableGrid
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
         m_CallState: 2
 --- !u!114 &1423772667
 MonoBehaviour:
