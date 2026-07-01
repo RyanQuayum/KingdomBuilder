@@ -22,7 +22,7 @@ public class CityGridVisualizer : MonoBehaviour
         grid = GetComponent<CityGrid>();
         EnsureGridRenderer();
         RebuildGrid();
-        Debug.Log($"showGrid = {showGrid}");
+        // Debug.Log($"showGrid = {showGrid}");
     }
 
     // private void OnEnable()

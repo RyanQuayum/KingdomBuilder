@@ -640,7 +640,7 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts
+    - Assets
     m_Globs: []
     m_ProductIds: 
     m_AnyWithAssetOrigin: 0
@@ -650,21 +650,21 @@ MonoBehaviour:
   m_ViewMode: 1
   m_StartGridSize: 96
   m_LastFolders:
-  - Assets/Scripts
+  - Assets
   m_LastFoldersGridSize: 96
   m_LastProjectPath: C:\Users\rquay\Documents\Unity Projects\Testrun1
   m_LockTracker:
     m_IsLocked: 0
   m_LastLocalAssetsSearchArea: 1
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 103}
+    scrollPos: {x: 0, y: 79}
     m_SelectedIDs:
-    - m_rawData: 568105584918846042
+    - m_rawData: 568105584918845900
     m_LastClickedID:
-      m_rawData: 568105584918846042
+      m_rawData: 568105584918845900
     m_ExpandedIDs:
     - m_rawData: 0
-    - m_rawData: 568105584918845892
+    - m_rawData: 568105584918845896
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -698,7 +698,7 @@ MonoBehaviour:
       m_rawData: 0
     m_ExpandedIDs:
     - m_rawData: 0
-    - m_rawData: 568105584918845892
+    - m_rawData: 568105584918845896
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -726,10 +726,9 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs:
-    - m_rawData: 568105584918832526
+    m_SelectedInstanceIDs: []
     m_LastClickedEntityId:
-      m_rawData: 568105584918832526
+      m_rawData: 0
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: []
     m_RenameOverlay:
@@ -809,10 +808,7 @@ MonoBehaviour:
       m_LastClickedID:
         m_rawData: 0
       m_ExpandedIDs:
-      - m_rawData: 568105589213756066
-      - m_rawData: 568105584918840622
-      - m_rawData: 568105584918840830
-      - m_rawData: 568105584918840868
+      - m_rawData: 568105589213756042
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1282,9 +1278,9 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
-    m_Target: {x: 2.211296, y: 35.62156, z: -252.0098}
+    m_Target: {x: -130.3227, y: -230.925, z: 748.9931}
     speed: 2
-    m_Value: {x: 2.211296, y: 35.62156, z: -252.0098}
+    m_Value: {x: -130.3227, y: -230.925, z: 748.9931}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1331,13 +1327,13 @@ MonoBehaviour:
     m_gridOpacity: 0.5
     m_NearestPlaneToHandleMode: 0
   m_Rotation:
-    m_Target: {x: 0.14345104, y: 0.02701074, z: -0.0039167567, w: 0.9892911}
+    m_Target: {x: 0.16864769, y: 0.022467831, z: -0.0038422411, w: 0.985427}
     speed: 2
-    m_Value: {x: -0.14345104, y: -0.027010739, z: 0.0039167562, w: -0.9892911}
+    m_Value: {x: -0.16864769, y: -0.022467831, z: 0.003842241, w: -0.98542696}
   m_Size:
-    m_Target: 193.12607
+    m_Target: 862.62427
     speed: 2
-    m_Value: 193.12607
+    m_Value: 862.62427
   m_Ortho:
     m_Target: 0
     speed: 2
