@@ -14,4 +14,11 @@ Buildings generate **Plot Satisfaction** amongst other values
 - **Low Satisfaction** reduces production
 -  When satisfaction is too low, peasants **Revolt**
 
-Test Commit!
+Add Procedual Generated Ground:
+- Check theres enough default space (looped)
+- Add Trees
+- Add Stone
+
+Resource Depletion - Limited
+- Player has to (eventually) go further out to collect
+- Which hints outpost style gameplay (Roads & Carts)
