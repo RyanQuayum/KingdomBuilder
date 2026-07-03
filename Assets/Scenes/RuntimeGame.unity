@@ -593,7 +593,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1800
+  far clip plane: 2000
   field of view: 60.000004
   orthographic: 0
   orthographic size: 5
@@ -1263,6 +1263,7 @@ Transform:
   - {fileID: 373274990}
   - {fileID: 581267499}
   - {fileID: 862597597}
+  - {fileID: 772902185}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &581267498
@@ -2063,19 +2064,21 @@ MonoBehaviour:
   seed: 12345
   randomizeSeed: 1
   reserveCenteredStartingArea: 1
-  startingAreaSize: {x: 64, y: 64}
-  sparseTreeCount: 25
-  edgePaddingCells: 2
+  startingAreaSize: {x: 48, y: 48}
+  sparseTreeCount: 50
+  edgePaddingCells: 5
   sparseTreeJitter: 0.35
   sparseScaleRange: {x: 0.75, y: 1.15}
   forestCount: 3
-  minForestSize: {x: 10, y: 10}
-  maxForestSize: {x: 40, y: 40}
+  minForestSize: {x: 25, y: 25}
+  maxForestSize: {x: 35, y: 35}
   forestDensity: 0.1
   forestPlacementAttempts: 40
   minimumForestGapCells: 4
   forestTreeJitter: 0.45
   forestScaleRange: {x: 0.85, y: 1.35}
+  presetTreePrefab: {fileID: 5555604299227659211, guid: 71431c0341ec14241849325d5b4335a1, type: 3}
+  presetTreePercentOfForestCells: 0.25
   groundMask:
     serializedVersion: 2
     m_Bits: 8
@@ -2090,12 +2093,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 772902183}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -58.24026, y: -8.2, z: -196.21123}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 9.596447, y: -8.2, z: -113.30787}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 443124852}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &789145721
 GameObject:
@@ -3107,7 +3110,7 @@ MonoBehaviour:
     FieldOfView: 60.000004
     OrthographicSize: 5
     NearClipPlane: 0.3
-    FarClipPlane: 1800
+    FarClipPlane: 2000
     Dutch: 0
     ModeOverride: 0
     PhysicalProperties:
@@ -3150,7 +3153,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61cdc816fdbe933438606bdfe03c0a5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DragPanCamera
-  dragSpeed: 0.16
+  dragSpeed: 0.1975
   zoomSpeed: 15
   minZoomDistance: 0
   maxZoomDistance: 2000
@@ -4819,4 +4822,3 @@ SceneRoots:
   - {fileID: 980051875}
   - {fileID: 789145724}
   - {fileID: 5670551736824379548}
-  - {fileID: 772902185}

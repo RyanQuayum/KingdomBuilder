@@ -8,11 +8,13 @@ public class ProceduralForestGenerator : MonoBehaviour
     {
         public RectInt cells;
         public int treeCount;
+        public int presetTreeCount;
 
-        public GeneratedForest(RectInt cells, int treeCount)
+        public GeneratedForest(RectInt cells, int treeCount, int presetTreeCount)
         {
             this.cells = cells;
             this.treeCount = treeCount;
+            this.presetTreeCount = presetTreeCount;
         }
     }
 
@@ -47,6 +49,11 @@ public class ProceduralForestGenerator : MonoBehaviour
     [SerializeField] private int minimumForestGapCells = 4;
     [SerializeField] private float forestTreeJitter = 0.45f;
     [SerializeField] private Vector2 forestScaleRange = new Vector2(0.85f, 1.35f);
+
+    [Header("Special Trees")]
+    [SerializeField] private GameObject presetTreePrefab;
+    [Range(0f, 1f)]
+    [SerializeField] private float presetTreePercentOfForestCells = 0.25f; // Represents number of special trees in forest
 
     [Header("Ground Raycast")]
     [SerializeField] private LayerMask groundMask;
@@ -143,7 +150,11 @@ public class ProceduralForestGenerator : MonoBehaviour
             int cellArea = candidate.width * candidate.height;
             int treeCount = Mathf.RoundToInt(cellArea * forestDensity);
 
-            generatedForests.Add(new GeneratedForest(candidate, treeCount));
+            int presetTreeCount = Mathf.RoundToInt(cellArea * presetTreePercentOfForestCells);
+            presetTreeCount = Mathf.Min(presetTreeCount, treeCount);
+
+            generatedForests.Add(new GeneratedForest(candidate, treeCount, presetTreeCount));
+            // Debug.Log($"Generated {generatedForests.Count} forests");
         }
     }
 
@@ -185,14 +196,21 @@ public class ProceduralForestGenerator : MonoBehaviour
                 if (!TryGetGroundPosition(cell, forestTreeJitter, random, out Vector3 position))
                     continue;
 
-                GameObject tree = CreateTree(position, forestScaleRange, random, "Dense Forest Tree");
+                bool usePresetPrefab =
+                    presetTreePrefab != null &&
+                    random.NextDouble() < presetTreePercentOfForestCells;
 
+                GameObject tree = usePresetPrefab
+                    ? CreateTreeFromPrefab(presetTreePrefab, position, forestScaleRange, random, "Preset Forest Tree")
+                    : CreateTree(position, forestScaleRange, random, "Dense Forest Tree");
+                
                 if (tree == null)
                     continue;
 
                 generatedTrees.Add(tree);
                 usedCells.Add(cell);
                 placed++;
+                // Debug.Log($"Forest placed {placed}/{forest.treeCount} trees. Preset target: {forest.presetTreeCount}");
             }
         }
     }
@@ -371,21 +389,25 @@ public class ProceduralForestGenerator : MonoBehaviour
     {
         GameObject tree;
 
-        if (treePrefabs != null && treePrefabs.Length > 0)
+        if (treePrefabs == null || treePrefabs.Length == 0)
         {
-            GameObject prefab = treePrefabs[random.Next(0, treePrefabs.Length)];
-
-            if (prefab == null)
-                return null;
-
-            tree = Instantiate(prefab, position, Quaternion.identity, generatedParent);
-            tree.name = treeName;
+           Debug.LogWarning("No tree prefabs assigned.");
+            return null; 
         }
-        else
-        {
-            tree = CreatePlaceholderTree(position, treeName);
-            tree.transform.SetParent(generatedParent, true);
-        }
+        
+        GameObject prefab = treePrefabs[random.Next(0, treePrefabs.Length)];
+
+        if (prefab == null)
+            return null;
+
+        tree = Instantiate(prefab, position, Quaternion.identity, generatedParent);
+        tree.name = treeName;
+        // }
+        // else
+        // {
+        //     tree = CreatePlaceholderTree(position, treeName);
+        //     tree.transform.SetParent(generatedParent, true);
+        // }
 
         if (randomYRotation)
             tree.transform.rotation = Quaternion.Euler(0f, RandomRange(random, 0f, 360f), 0f);
@@ -396,25 +418,49 @@ public class ProceduralForestGenerator : MonoBehaviour
         return tree;
     }
 
-    private GameObject CreatePlaceholderTree(Vector3 position, string treeName)
+    private GameObject CreateTreeFromPrefab(
+    GameObject prefab,
+    Vector3 position,
+    Vector2 scaleRange,
+    System.Random random,
+    string treeName
+)
     {
-        GameObject root = new GameObject(treeName);
-        root.transform.position = position;
+        if (prefab == null)
+            return CreateTree(position, scaleRange, random, treeName);
 
-        GameObject trunk = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-        trunk.name = "Trunk";
-        trunk.transform.SetParent(root.transform, false);
-        trunk.transform.localPosition = new Vector3(0f, 0.45f, 0f);
-        trunk.transform.localScale = new Vector3(0.16f, 0.45f, 0.16f);
+        GameObject tree = Instantiate(prefab, position, Quaternion.identity, generatedParent);
+        tree.name = treeName;
 
-        GameObject leaves = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        leaves.name = "Leaves";
-        leaves.transform.SetParent(root.transform, false);
-        leaves.transform.localPosition = new Vector3(0f, 1.15f, 0f);
-        leaves.transform.localScale = new Vector3(0.85f, 0.85f, 0.85f);
+        if (randomYRotation)
+            tree.transform.rotation = Quaternion.Euler(0f, RandomRange(random, 0f, 360f), 0f);
 
-        return root;
+        float scale = RandomRange(random, scaleRange.x, scaleRange.y);
+        tree.transform.localScale *= scale;
+
+        return tree;
+
     }
+
+    // private GameObject CreatePlaceholderTree(Vector3 position, string treeName)
+    // {
+    //     GameObject root = new GameObject(treeName);
+    //     root.transform.position = position;
+
+    //     GameObject trunk = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+    //     trunk.name = "Trunk";
+    //     trunk.transform.SetParent(root.transform, false);
+    //     trunk.transform.localPosition = new Vector3(0f, 0.45f, 0f);
+    //     trunk.transform.localScale = new Vector3(0.16f, 0.45f, 0.16f);
+
+    //     GameObject leaves = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+    //     leaves.name = "Leaves";
+    //     leaves.transform.SetParent(root.transform, false);
+    //     leaves.transform.localPosition = new Vector3(0f, 1.15f, 0f);
+    //     leaves.transform.localScale = new Vector3(0.85f, 0.85f, 0.85f);
+
+    //     return root;
+    // }
 
     private float RandomRange(System.Random random, float min, float max)
     {
