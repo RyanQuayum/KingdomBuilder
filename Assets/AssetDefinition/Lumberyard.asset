@@ -18,7 +18,7 @@ MonoBehaviour:
   category: 2
   icon: {fileID: 0}
   prefab: {fileID: 603168336758582690, guid: ceef26f23d26b94479c35480a4528f0c, type: 3}
-  footprint: {x: 1, y: 1}
+  footprint: {x: 9, y: 9}
   requiresRoadAccess: 1
   unlockLevel: 1
   buildCost: []

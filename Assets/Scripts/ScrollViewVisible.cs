@@ -13,4 +13,9 @@ public class ScrollViewVisable : MonoBehaviour
     {
         scrollViewObject.SetActive(false);
     }
+
+    void Awake()
+    {
+        scrollViewObject.SetActive(false);
+    }
 }
