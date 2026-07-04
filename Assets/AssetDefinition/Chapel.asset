@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58f892d9115c468d829c4d83cfe541ef, type: 3}
   m_Name: Chapel
   m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
-  id: 1
+  id: chapel
   displayName: Town House
   description: Peasants Congregate Here.
   category: 5

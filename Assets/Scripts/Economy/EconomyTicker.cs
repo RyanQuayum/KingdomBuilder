@@ -4,7 +4,8 @@ using UnityEngine;
 public class EconomyTicker : MonoBehaviour
 {
     public CityResources resources;
-    public float tickSeconds = 5f;
+    public float tickSeconds = 1f;
+    public ForestBonus forestBonus;
 
     private readonly List<BuildingInstance> buildings = new List<BuildingInstance>();
     private float timer;
@@ -26,6 +27,9 @@ public class EconomyTicker : MonoBehaviour
 
         if (buildManager != null)
             buildManager.BuildingPlaced += Register;
+
+        if (forestBonus == null)
+            forestBonus = FindAnyObjectByType<ForestBonus>();
     }
 
     private void Update()
@@ -53,6 +57,8 @@ public class EconomyTicker : MonoBehaviour
             {
                 resources.TrySpend(building.Definition.upkeepPerTick);
                 resources.Add(building.Definition.productionPerTick);
+                if (forestBonus != null)
+                    forestBonus.ApplyBonus(building, resources);
             }
         }
     }

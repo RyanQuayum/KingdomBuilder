@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 58f892d9115c468d829c4d83cfe541ef, type: 3}
   m_Name: Market
   m_EditorClassIdentifier: Assembly-CSharp::BuildingDefinition
-  id: 2
+  id: market
   displayName: Market Stall
   description: Sells Fruit for cash
   category: 2

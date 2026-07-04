@@ -136,9 +136,9 @@ public class ProceduralForestGenerator : MonoBehaviour
         {
             attempts++;
 
-            RectInt candidate = CreateRandomForestRect(random);
+            RectInt candidate = CreateRandomForestRect(random); // Candidate Forest
 
-            if (!IsRectInsideGrid(candidate))
+            if (!IsRectInsideGrid(candidate)) // Checks to see if valid
                 continue;
 
             if (RectsOverlapWithPadding(candidate, reservedArea, minimumForestGapCells))
@@ -150,7 +150,7 @@ public class ProceduralForestGenerator : MonoBehaviour
             int cellArea = candidate.width * candidate.height;
             int treeCount = Mathf.RoundToInt(cellArea * forestDensity);
 
-            int presetTreeCount = Mathf.RoundToInt(cellArea * presetTreePercentOfForestCells);
+            int presetTreeCount = Mathf.RoundToInt(cellArea * presetTreePercentOfForestCells); // Calculate how many special trees in forest by percentage
             presetTreeCount = Mathf.Min(presetTreeCount, treeCount);
 
             generatedForests.Add(new GeneratedForest(candidate, treeCount, presetTreeCount));
@@ -158,7 +158,7 @@ public class ProceduralForestGenerator : MonoBehaviour
         }
     }
 
-    private RectInt CreateRandomForestRect(System.Random random)
+    private RectInt CreateRandomForestRect(System.Random random) // Create random 2D Grid in a Rect
     {
         int width = random.Next(minForestSize.x, maxForestSize.x + 1);
         int height = random.Next(minForestSize.y, maxForestSize.y + 1);
@@ -198,7 +198,7 @@ public class ProceduralForestGenerator : MonoBehaviour
 
                 bool usePresetPrefab =
                     presetTreePrefab != null &&
-                    random.NextDouble() < presetTreePercentOfForestCells;
+                    random.NextDouble() < presetTreePercentOfForestCells; // Percentage Chance tree is special in a bool
 
                 GameObject tree = usePresetPrefab
                     ? CreateTreeFromPrefab(presetTreePrefab, position, forestScaleRange, random, "Preset Forest Tree")
@@ -395,20 +395,13 @@ public class ProceduralForestGenerator : MonoBehaviour
             return null; 
         }
         
-        GameObject prefab = treePrefabs[random.Next(0, treePrefabs.Length)];
+        GameObject prefab = treePrefabs[random.Next(0, treePrefabs.Length)]; // Choose random prefab from list
 
         if (prefab == null)
             return null;
 
         tree = Instantiate(prefab, position, Quaternion.identity, generatedParent);
-        tree.name = treeName;
-        // }
-        // else
-        // {
-        //     tree = CreatePlaceholderTree(position, treeName);
-        //     tree.transform.SetParent(generatedParent, true);
-        // }
-
+        tree.name = treeName; // instantiate gameobject with name ← & ^
         if (randomYRotation)
             tree.transform.rotation = Quaternion.Euler(0f, RandomRange(random, 0f, 360f), 0f);
 
@@ -442,28 +435,78 @@ public class ProceduralForestGenerator : MonoBehaviour
 
     }
 
-    // private GameObject CreatePlaceholderTree(Vector3 position, string treeName)
-    // {
-    //     GameObject root = new GameObject(treeName);
-    //     root.transform.position = position;
-
-    //     GameObject trunk = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-    //     trunk.name = "Trunk";
-    //     trunk.transform.SetParent(root.transform, false);
-    //     trunk.transform.localPosition = new Vector3(0f, 0.45f, 0f);
-    //     trunk.transform.localScale = new Vector3(0.16f, 0.45f, 0.16f);
-
-    //     GameObject leaves = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-    //     leaves.name = "Leaves";
-    //     leaves.transform.SetParent(root.transform, false);
-    //     leaves.transform.localPosition = new Vector3(0f, 1.15f, 0f);
-    //     leaves.transform.localScale = new Vector3(0.85f, 0.85f, 0.85f);
-
-    //     return root;
-    // }
 
     private float RandomRange(System.Random random, float min, float max)
     {
         return Mathf.Lerp(min, max, (float)random.NextDouble());
+    }
+
+    public bool HasGeneratedForests()
+    {
+        return generatedForests.Count > 0;
+    }
+
+    public bool IsCellInForestBonusRange(Vector2Int cell, int rangeCells)
+    {
+        foreach (GeneratedForest forest in generatedForests)
+        {
+            RectInt expanded = ExpandRect(forest.cells, rangeCells);
+
+            if (expanded.Contains(cell))
+                return true;
+        }
+
+        return false;
+    }
+
+    public bool IsFootprintInForestBonusRange(Vector2Int origin, Vector2Int footprint, int rangeCells)
+    {
+        for (int x = 0; x < footprint.x; x++)
+        {
+            for (int y = 0; y < footprint.y; y++)
+            {
+                Vector2Int cell = origin + new Vector2Int(x, y);
+
+                if (IsCellInForestBonusRange(cell, rangeCells))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    public HashSet<Vector2Int> GetForestBonusCells(int rangeCells)
+    {
+        HashSet<Vector2Int> cells = new HashSet<Vector2Int>();
+
+        foreach (GeneratedForest forest in generatedForests)
+        {
+            RectInt expanded = ExpandRect(forest.cells, rangeCells);
+
+            int minX = Mathf.Max(0, expanded.xMin);
+            int minY = Mathf.Max(0, expanded.yMin);
+            int maxX = Mathf.Min(grid.size.x, expanded.xMax);
+            int maxY = Mathf.Min(grid.size.y, expanded.yMax);
+
+            for (int x = minX; x < maxX; x++)
+            {
+                for (int y = minY; y < maxY; y++)
+                {
+                    cells.Add(new Vector2Int(x, y));
+                }
+            }
+        }
+
+        return cells;
+    }
+
+    private RectInt ExpandRect(RectInt rect, int amount)
+    {
+        return new RectInt(
+            rect.xMin - amount,
+            rect.yMin - amount,
+            rect.width + amount * 2,
+            rect.height + amount * 2
+        );
     }
 }
