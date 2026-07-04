@@ -2957,7 +2957,7 @@ MonoBehaviour:
   lumberyardDisplayName: Lumberyard
   bonusRangeCells: 5
   bonusResource: 1
-  bonusAmountPerTick: 5
+  bonusAmountPerTick: 50
 --- !u!1 &1102331002
 GameObject:
   m_ObjectHideFlags: 0
