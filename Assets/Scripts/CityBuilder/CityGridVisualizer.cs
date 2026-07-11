@@ -4,12 +4,12 @@ using UnityEngine;
 public class CityGridVisualizer : MonoBehaviour
 {
     [Header("Runtime Grid")]
-    public bool showGrid = false;
-    public float yOffset = 0.02f;
+    public bool showGrid = true;
+    public float yOffset = 0.03f;
     public Color lineColor = new Color(1f, 1f, 1f, 0.35f);
     public Material lineMaterial;
 
-    private const string GridLinesName = "Runtime Grid Lines";
+    private const string GridLinesName = "Runtime Height Grid Lines";
 
     private CityGrid grid;
     private MeshFilter meshFilter;
@@ -22,22 +22,11 @@ public class CityGridVisualizer : MonoBehaviour
         grid = GetComponent<CityGrid>();
         EnsureGridRenderer();
         RebuildGrid();
-        // Debug.Log($"showGrid = {showGrid}");
     }
 
-    // private void OnEnable()
-    // {
-    //     SetGridVisible(showGrid);
-    // }
-
-    public void disableGrid()
+    private void OnEnable()
     {
-        SetGridVisible(false);
-    }
-
-    public void enableGrid()
-    {
-        SetGridVisible(true);
+        SetGridVisible(showGrid);
     }
 
     private void OnValidate()
@@ -51,49 +40,6 @@ public class CityGridVisualizer : MonoBehaviour
         RebuildGrid();
     }
 
-    private void OnDrawGizmos()
-    {
-        CityGrid editorGrid = GetComponent<CityGrid>();
-
-        if (editorGrid == null)
-        return;
-
-        // if (!showGrid)
-        // return;
-
-        Gizmos.color = lineColor;
-
-        float width = editorGrid.size.x * editorGrid.cellSize;
-        float depth = editorGrid.size.y * editorGrid.cellSize;
-
-
-        for (int x = 0; x <= editorGrid.size.x; x++)
-        {
-            float xPosition = x * editorGrid.cellSize;
-
-            Vector3 start = new Vector3(xPosition, yOffset, 0f);
-            Vector3 end = new Vector3(xPosition, yOffset, depth);
-
-            Gizmos.DrawLine(
-                editorGrid.transform.TransformPoint(start),
-                editorGrid.transform.TransformPoint(end)
-            );
-        }
-
-    for (int y = 0; y <= editorGrid.size.y; y++)
-        {
-            float zPosition = y * editorGrid.cellSize;
-
-            Vector3 start = new Vector3(0f, yOffset, zPosition);
-            Vector3 end = new Vector3(width, yOffset, zPosition);
-
-            Gizmos.DrawLine(
-                editorGrid.transform.TransformPoint(start),
-                editorGrid.transform.TransformPoint(end)
-            );
-        }
-    }
-
     public void RebuildGrid()
     {
         if (grid == null)
@@ -101,48 +47,27 @@ public class CityGridVisualizer : MonoBehaviour
 
         EnsureGridRenderer();
 
-        int verticalLines = grid.size.x + 1;
-        int horizontalLines = grid.size.y + 1;
-        int lineCount = verticalLines + horizontalLines;
+        int cellCount = grid.size.x * grid.size.y;
+        int lineCount = cellCount * 4;
 
         Vector3[] vertices = new Vector3[lineCount * 2];
         int[] indices = new int[vertices.Length];
 
         int vertexIndex = 0;
 
-        float width = grid.size.x * grid.cellSize;
-        float depth = grid.size.y * grid.cellSize;
-
-        for (int x = 0; x <= grid.size.x; x++)
+        for (int x = 0; x < grid.size.x; x++)
         {
-            float xPosition = x * grid.cellSize;
-
-            vertices[vertexIndex] = new Vector3(xPosition, yOffset, 0f);
-            indices[vertexIndex] = vertexIndex;
-            vertexIndex++;
-
-            vertices[vertexIndex] = new Vector3(xPosition, yOffset, depth);
-            indices[vertexIndex] = vertexIndex;
-            vertexIndex++;
-        }
-
-        for (int y = 0; y <= grid.size.y; y++)
-        {
-            float zPosition = y * grid.cellSize;
-
-            vertices[vertexIndex] = new Vector3(0f, yOffset, zPosition);
-            indices[vertexIndex] = vertexIndex;
-            vertexIndex++;
-
-            vertices[vertexIndex] = new Vector3(width, yOffset, zPosition);
-            indices[vertexIndex] = vertexIndex;
-            vertexIndex++;
+            for (int y = 0; y < grid.size.y; y++)
+            {
+                Vector2Int cell = new Vector2Int(x, y);
+                AddCellSquare(cell, vertices, indices, ref vertexIndex);
+            }
         }
 
         if (gridMesh == null)
         {
             gridMesh = new Mesh();
-            gridMesh.name = "City Grid Lines";
+            gridMesh.name = "Height Aware City Grid Lines";
         }
 
         gridMesh.Clear();
@@ -154,6 +79,48 @@ public class CityGridVisualizer : MonoBehaviour
 
         ApplyMaterial();
         SetGridVisible(showGrid);
+    }
+
+    private void AddCellSquare(
+        Vector2Int cell,
+        Vector3[] vertices,
+        int[] indices,
+        ref int vertexIndex
+    )
+    {
+        float xMin = cell.x * grid.cellSize;
+        float xMax = (cell.x + 1) * grid.cellSize;
+        float zMin = cell.y * grid.cellSize;
+        float zMax = (cell.y + 1) * grid.cellSize;
+
+        float y = grid.GetWorldHeight(cell) + yOffset;
+
+        Vector3 bottomLeft = new Vector3(xMin, y, zMin);
+        Vector3 bottomRight = new Vector3(xMax, y, zMin);
+        Vector3 topRight = new Vector3(xMax, y, zMax);
+        Vector3 topLeft = new Vector3(xMin, y, zMax);
+
+        AddLine(bottomLeft, bottomRight, vertices, indices, ref vertexIndex);
+        AddLine(bottomRight, topRight, vertices, indices, ref vertexIndex);
+        AddLine(topRight, topLeft, vertices, indices, ref vertexIndex);
+        AddLine(topLeft, bottomLeft, vertices, indices, ref vertexIndex);
+    }
+
+    private void AddLine(
+        Vector3 start,
+        Vector3 end,
+        Vector3[] vertices,
+        int[] indices,
+        ref int vertexIndex
+    )
+    {
+        vertices[vertexIndex] = start;
+        indices[vertexIndex] = vertexIndex;
+        vertexIndex++;
+
+        vertices[vertexIndex] = end;
+        indices[vertexIndex] = vertexIndex;
+        vertexIndex++;
     }
 
     private void EnsureGridRenderer()
@@ -199,7 +166,7 @@ public class CityGridVisualizer : MonoBehaviour
                 shader = Shader.Find("Hidden/Internal-Colored");
 
             generatedMaterial = new Material(shader);
-            generatedMaterial.name = "Generated City Grid Material";
+            generatedMaterial.name = "Generated Height Grid Material";
         }
 
         generatedMaterial.color = lineColor;

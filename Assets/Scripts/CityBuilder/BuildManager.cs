@@ -132,7 +132,7 @@ public class BuildManager : MonoBehaviour
     }
 
     public bool TryPlaceSelected()
-    // Try initalise object and place on grid.
+    // Try initalise object and place on grid. Note placement pos is Vector3
     {
         if (selectedBuilding == null || selectedBuilding.prefab == null || !previewIsValid)
             return false;
@@ -143,9 +143,14 @@ public class BuildManager : MonoBehaviour
             return false;
         }
 
+        Vector3 placementPosition = GetFootprintCenterWorld(
+            previewCell,
+            selectedBuilding.footprint
+        );
+
         GameObject placedObject = Instantiate(
             selectedBuilding.prefab, 
-            GetFootprintCenterWorld(previewCell, selectedBuilding.footprint), 
+            placementPosition,
             Quaternion.identity, 
             buildingsParent
         );

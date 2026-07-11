@@ -20,8 +20,49 @@ public class CityGrid : MonoBehaviour
     */
     private int[,] heightLevels; // 2D array with each cell storing cell height e.g. 1..2..3..4...
 
+    public void EnsureInitialized()
+{
+    size = new Vector2Int(
+        Mathf.Max(1, size.x),
+        Mathf.Max(1, size.y)
+    );
+
+    if (occupied == null ||
+        occupied.GetLength(0) != size.x ||
+        occupied.GetLength(1) != size.y)
+    {
+        occupied = new BuildingInstance[size.x, size.y];
+    }
+
+    if (heightLevels == null ||
+        heightLevels.GetLength(0) != size.x ||
+        heightLevels.GetLength(1) != size.y)
+    {
+        int[,] oldHeights = heightLevels;
+        heightLevels = new int[size.x, size.y];
+
+        for (int x = 0; x < size.x; x++)
+        {
+            for (int y = 0; y < size.y; y++)
+            {
+                if (oldHeights != null &&
+                    x < oldHeights.GetLength(0) &&
+                    y < oldHeights.GetLength(1))
+                {
+                    heightLevels[x, y] = oldHeights[x, y];
+                }
+                else
+                {
+                    heightLevels[x, y] = defaultHeightLevel;
+                }
+            }
+        }
+    }
+}
+
     private void Awake()
     {
+        EnsureInitialized();
         occupied = new BuildingInstance[size.x, size.y]; // Clears Grid on start
         heightLevels = new int[size.x, size.y];
         for (int x = 0; x < size.x; x++)
@@ -31,6 +72,17 @@ public class CityGrid : MonoBehaviour
                 heightLevels[x, y] = defaultHeightLevel; // Set grid to default height
             }
         }
+    }
+
+    private void OnValidate()
+    {
+        size = new Vector2Int(
+            Mathf.Max(1, size.x),
+            Mathf.Max(1, size.y)
+        );
+
+        if (Application.isPlaying)
+            EnsureInitialized();
     }
 
     public bool TryGetCellFromWorld(Vector3 worldPosition, out Vector2Int cell)
@@ -48,6 +100,7 @@ public class CityGrid : MonoBehaviour
         Converts cell to world location.
     */
     {
+        EnsureInitialized();
         Vector3 local = new Vector3((cell.x + 0.5f) * cellSize, GetWorldHeight(cell), (cell.y + 0.5f) * cellSize);
         return transform.TransformPoint(local);
     }
@@ -55,6 +108,7 @@ public class CityGrid : MonoBehaviour
     // Height getter/setters.
     public int GetHeightLevel(Vector2Int cell)
     {
+        EnsureInitialized();
         if (!IsInBounds(cell))
             return defaultHeightLevel;
 
