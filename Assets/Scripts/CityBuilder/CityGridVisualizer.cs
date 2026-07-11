@@ -1,3 +1,4 @@
+using UnityEditor.ShaderGraph;
 using UnityEngine;
 
 [RequireComponent(typeof(CityGrid))]
@@ -20,6 +21,12 @@ public class CityGridVisualizer : MonoBehaviour
     private void Awake()
     {
         grid = GetComponent<CityGrid>();
+    }
+
+    private void Start()
+    {
+        if (grid != null)
+        grid.EnsureInitialized();
         EnsureGridRenderer();
         RebuildGrid();
     }
@@ -36,15 +43,17 @@ public class CityGridVisualizer : MonoBehaviour
         if (!Application.isPlaying)
             return;
 
-        EnsureGridRenderer();
-        RebuildGrid();
+        if (grid != null)
+            grid.EnsureInitialized();
     }
 
     public void RebuildGrid()
     {
         if (grid == null)
+            grid = GetComponent<CityGrid>();
+        if (grid == null)
             return;
-
+        grid.EnsureInitialized();
         EnsureGridRenderer();
 
         int cellCount = grid.size.x * grid.size.y;
