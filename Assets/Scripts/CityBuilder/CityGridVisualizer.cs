@@ -1,5 +1,5 @@
-using UnityEditor.ShaderGraph;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 [RequireComponent(typeof(CityGrid))]
 public class CityGridVisualizer : MonoBehaviour
@@ -56,11 +56,11 @@ public class CityGridVisualizer : MonoBehaviour
         grid.EnsureInitialized();
         EnsureGridRenderer();
 
-        int cellCount = grid.size.x * grid.size.y;
-        int lineCount = cellCount * 4;
+        int cellCount = grid.size.x * grid.size.y; //64x64=4096
+        int lineCount = cellCount * 4; // each cell has 4 lines = 16384
 
-        Vector3[] vertices = new Vector3[lineCount * 2];
-        int[] indices = new int[vertices.Length];
+        Vector3[] vertices = new Vector3[lineCount * 2]; // for a line to be drawn, it must start and end at a vertex, 2 verticies for a line = lineCount*2
+        int[] indices = new int[vertices.Length]; // Maps vertex positions into line segments (each pair of indices forms one line).
 
         int vertexIndex = 0;
 
@@ -80,6 +80,7 @@ public class CityGridVisualizer : MonoBehaviour
         }
 
         gridMesh.Clear();
+    gridMesh.indexFormat = IndexFormat.UInt32;
         gridMesh.vertices = vertices;
         gridMesh.SetIndices(indices, MeshTopology.Lines, 0);
         gridMesh.RecalculateBounds();
@@ -97,8 +98,8 @@ public class CityGridVisualizer : MonoBehaviour
         ref int vertexIndex
     )
     {
-        float xMin = cell.x * grid.cellSize;
-        float xMax = (cell.x + 1) * grid.cellSize;
+        float xMin = cell.x * grid.cellSize; // e.g. cell 1 * (gridsize = 1) = 1
+        float xMax = (cell.x + 1) * grid.cellSize; // (cell 1 +1) * (gridsize = 1) = 2  ----> Cell Bounds
         float zMin = cell.y * grid.cellSize;
         float zMax = (cell.y + 1) * grid.cellSize;
 
@@ -107,12 +108,12 @@ public class CityGridVisualizer : MonoBehaviour
         Vector3 bottomLeft = new Vector3(xMin, y, zMin);
         Vector3 bottomRight = new Vector3(xMax, y, zMin);
         Vector3 topRight = new Vector3(xMax, y, zMax);
-        Vector3 topLeft = new Vector3(xMin, y, zMax);
+        Vector3 topLeft = new Vector3(xMin, y, zMax); // create the cell verticies/bounds
 
         AddLine(bottomLeft, bottomRight, vertices, indices, ref vertexIndex);
         AddLine(bottomRight, topRight, vertices, indices, ref vertexIndex);
         AddLine(topRight, topLeft, vertices, indices, ref vertexIndex);
-        AddLine(topLeft, bottomLeft, vertices, indices, ref vertexIndex);
+        AddLine(topLeft, bottomLeft, vertices, indices, ref vertexIndex); // Add lines between Bounds
     }
 
     private void AddLine(
