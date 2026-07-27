@@ -1204,7 +1204,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EconomyTicker
   resources: {fileID: 0}
-  tickSeconds: 5
+  tickSeconds: 1
   forestBonus: {fileID: 0}
 --- !u!1 &410087039
 GameObject:

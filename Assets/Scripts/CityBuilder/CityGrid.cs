@@ -72,6 +72,22 @@ public class CityGrid : MonoBehaviour
                 heightLevels[x, y] = defaultHeightLevel; // Set grid to default height
             }
         }
+        heightLevels[0,0] = 5;
+        heightLevels[1,0] = 5;
+        heightLevels[2,0] = 5;
+        heightLevels[3,0] = 5;
+        heightLevels[0,1] = 5;
+        heightLevels[1,1] = 5;
+        heightLevels[2,1] = 5;
+        heightLevels[3,1] = 5;
+        heightLevels[0,2] = 5;
+        heightLevels[1,2] = 5;
+        heightLevels[2,2] = 5;
+        heightLevels[3,2] = 5;
+        heightLevels[0,3] = 5;
+        heightLevels[1,3] = 5;
+        heightLevels[2,3] = 5;
+        heightLevels[3,3] = 5;
     }
 
     private void OnValidate()
@@ -101,7 +117,7 @@ public class CityGrid : MonoBehaviour
     */
     {
         EnsureInitialized();
-        Vector3 local = new Vector3((cell.x + 0.5f) * cellSize, GetWorldHeight(cell), (cell.y + 0.5f) * cellSize);
+        Vector3 local = new Vector3((cell.x + 0.5f) * cellSize, GetLocalHeight(cell), (cell.y + 0.5f) * cellSize);
         return transform.TransformPoint(local);
     }
 
@@ -115,15 +131,27 @@ public class CityGrid : MonoBehaviour
         return heightLevels[cell.x, cell.y];
     }
 
-        public void SetHeightLevel(Vector2Int cell, int heightLevel)
+    public void SetHeightLevel(Vector2Int cell, int heightLevel)
     {
+        EnsureInitialized();
         if (!IsInBounds(cell))
             return;
 
-        heightLevels[cell.x, cell.y] = heightLevel;
+        heightLevels[cell.x, cell.y] = Mathf.Max(0,heightLevel);
     }
 
-        public float GetWorldHeight(Vector2Int cell)
+    public float GetWorldHeight(Vector2Int cell)
+    {
+        Vector3 localSurface = new Vector3(
+        (cell.x + 0.5f) * cellSize,
+        GetLocalHeight(cell),
+        (cell.y + 0.5f) * cellSize
+        );
+
+    return transform.TransformPoint(localSurface).y;
+    }
+
+    public float GetLocalHeight(Vector2Int cell)
     {
         return GetHeightLevel(cell) * levelHeight;
     }

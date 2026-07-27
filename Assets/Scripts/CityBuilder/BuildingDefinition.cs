@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(menuName = "Medieval City Builder/Building Definition")]
 /* 
@@ -26,7 +27,13 @@ public class BuildingDefinition : ScriptableObject
     [Header("Economy")]
     public ResourceAmount[] buildCost;
     public ResourceAmount[] storageProvided;
-    public ResourceAmount[] productionPerTick;
+
+    [FormerlySerializedAs("productionPerTick")]
+    public ResourceAmount[] productionPerCycle;
+
+    [Min(1)]
+    public int productionIntervalTicks = 1;
+    
     public ResourceAmount[] upkeepPerTick;
     public int populationCapacity;
     public int happinessImpact;

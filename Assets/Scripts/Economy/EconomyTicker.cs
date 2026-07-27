@@ -9,6 +9,7 @@ public class EconomyTicker : MonoBehaviour
 
     private readonly List<BuildingInstance> buildings = new List<BuildingInstance>();
     private float timer;
+    private double nextTickTime;
 
     public void Register(BuildingInstance building)
     {
@@ -32,16 +33,40 @@ public class EconomyTicker : MonoBehaviour
             forestBonus = FindAnyObjectByType<ForestBonus>();
     }
 
+    
+    private void Start()
+    {
+        nextTickTime = Time.timeAsDouble + tickSeconds;
+    }
+
     private void Update()
     {
-        timer += Time.deltaTime;
-
-        if (timer < tickSeconds)
+        if (tickSeconds <= 0f)
             return;
 
-        timer -= tickSeconds;
-        Tick();
+        double now = Time.timeAsDouble;
+        while (now > nextTickTime)
+        {
+            Tick();
+            nextTickTime += tickSeconds;
+        }
+
     }
+
+    private void ProcessBuilding(BuildingInstance building)
+    {
+        if (building == null || !building.IsComplete || building.Definition == null) {return;}
+
+        BuildingDefinition definition = building.Definition;
+
+        if (!resources.TrySpend(definition.upkeepPerTick)) // Try Spend actually spends upkeep - Pay this ticks upkeep
+            return;
+        if (!building.AdvanceProductionTick())
+            return;
+
+        resources.Add(definition.productionPerCycle);
+    }
+
 
     private void Tick()
     {
@@ -49,17 +74,6 @@ public class EconomyTicker : MonoBehaviour
             return;
 
         foreach (BuildingInstance building in buildings)
-        {
-            if (building == null || !building.IsComplete || building.Definition == null)
-                continue;
-
-            if (resources.CanAfford(building.Definition.upkeepPerTick))
-            {
-                resources.TrySpend(building.Definition.upkeepPerTick);
-                resources.Add(building.Definition.productionPerTick);
-                if (forestBonus != null)
-                    forestBonus.ApplyBonus(building, resources);
-            }
-        }
+            ProcessBuilding(building);
     }
 }
