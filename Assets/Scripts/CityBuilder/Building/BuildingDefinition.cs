@@ -25,6 +25,9 @@ public class BuildingDefinition : ScriptableObject
     public int unlockLevel = 1;
 
     [Header("Economy")]
+    [Min(0)]
+    [Tooltip("Maximum number of this building allowed at once. Set to 0 for unlimited.")]
+    public int maxInstances = 0;
     public ResourceAmount[] buildCost;
     public ResourceAmount[] storageProvided;
 

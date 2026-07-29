@@ -102,6 +102,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7514473329525792995}
+  - component: {fileID: 4974718451817729250}
+  - component: {fileID: 9215238373596742853}
   m_Layer: 0
   m_Name: TownHall
   m_TagString: Untagged
@@ -125,3 +127,28 @@ Transform:
   - {fileID: 4622573975974327306}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4974718451817729250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8642754504220966843}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1dc3f6c9487487aac73e18c2bcf18fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BuildingInstance
+--- !u!114 &9215238373596742853
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8642754504220966843}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bc352b0386a5644faa85f151ef61637, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TownHallProgression
+  level: 1

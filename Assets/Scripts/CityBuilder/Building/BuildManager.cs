@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
+using NUnit.Framework.Constraints;
 
 public class BuildManager : MonoBehaviour
 /*
@@ -26,6 +27,8 @@ public class BuildManager : MonoBehaviour
 
     public event Action<BuildingInstance> BuildingPlaced;
     public event Action<string> PlacementFailed;
+
+    private readonly List<BuildingInstance> placedBuildings = new List<BuildingInstance>();
 
     private bool pointerStartedOverUI;
 
@@ -137,6 +140,16 @@ public class BuildManager : MonoBehaviour
         if (selectedBuilding == null || selectedBuilding.prefab == null || !previewIsValid)
             return false;
 
+        
+        if (!CanPlaceAnother(selectedBuilding))
+            {
+                PlacementFailed?.Invoke(
+                    GetInstanceLimitMessage(selectedBuilding)
+                );
+
+                return false;
+            }
+
         if (resources != null && !resources.TrySpend(selectedBuilding.buildCost))
         {
             PlacementFailed?.Invoke("Not enough resources.");
@@ -161,6 +174,7 @@ public class BuildManager : MonoBehaviour
 
         instance.Initialize(selectedBuilding, previewCell);
         grid.Occupy(instance);
+        placedBuildings.Add(instance);
         BuildingPlaced?.Invoke(instance);
         return true;
     }
@@ -196,7 +210,8 @@ public class BuildManager : MonoBehaviour
         previewIsValid = 
         hasPointerCell && 
         grid.CanPlace(previewCell, selectedBuilding.footprint) && 
-        (resources == null || resources.CanAfford(selectedBuilding.buildCost));
+        (resources == null || resources.CanAfford(selectedBuilding.buildCost)) &&
+        CanPlaceAnother(selectedBuilding);
 
         preview.SetActive(hasPointerCell);
 
@@ -409,6 +424,58 @@ public class BuildManager : MonoBehaviour
         );
 
         return originWorld + grid.transform.TransformVector(localOffset);
+    }
+
+    
+
+
+
+    public int GetPlacedCount(BuildingDefinition definition)
+    {
+        if (definition == null)
+            return 0;
+
+        RemoveDestroyedBuildings();
+
+        int count = 0;
+
+        foreach (BuildingInstance building in placedBuildings)
+        {
+            if (building.Definition == definition)
+                count++;
+        }
+
+        return count;
+    }
+
+    public bool CanPlaceAnother(BuildingDefinition definition)
+    {
+        if (definition == null)
+            return false;
+
+        // Zero means unlimited.
+        if (definition.maxInstances <= 0)
+            return true;
+
+        return GetPlacedCount(definition) < definition.maxInstances;
+    }
+
+    private void RemoveDestroyedBuildings()
+    {
+        for (int i = placedBuildings.Count - 1; i >= 0; i--)
+        {
+            if (placedBuildings[i] == null)
+                placedBuildings.RemoveAt(i);
+        }
+    }
+
+    private string GetInstanceLimitMessage(BuildingDefinition definition)
+    {
+        string buildingName = string.IsNullOrWhiteSpace(definition.displayName)
+            ? definition.name
+            : definition.displayName;
+
+        return $"{buildingName} limit reached ({definition.maxInstances}).";
     }
 
 }
