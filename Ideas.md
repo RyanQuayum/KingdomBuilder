@@ -17,3 +17,6 @@ Totally Accurate Battle Simulator
 Passive Animations
 Permanent City gives bonuses for rogue runs (How does deck change?)
 Knight commanders give different bonuses
+Environmental Hazzards
+
+- Orcs, Goblins, Dragons, Elves, Imps, Vikings, Barbarians, 
