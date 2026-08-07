@@ -21,6 +21,7 @@ MonoBehaviour:
   footprint: {x: 9, y: 9}
   requiresRoadAccess: 1
   unlockLevel: 1
+  maxInstances: 3
   buildCost: []
   storageProvided: []
   productionPerCycle:

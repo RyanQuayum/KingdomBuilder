@@ -16,6 +16,9 @@ public class CityResources : MonoBehaviour
 
     public event Action<ResourceType, int> ResourceChanged;
 
+    [SerializeField]
+    private TownHallResourceCapacity townHallCapacity;
+
     public int Get(ResourceType type)
     {
         return amounts.TryGetValue(type, out int amount) ? amount : 0;
@@ -55,7 +58,17 @@ public class CityResources : MonoBehaviour
 
     public void Add(ResourceType type, int amount)
     {
+        int currentAmount = Get(type);
         int newAmount = Mathf.Max(0, Get(type) + amount);
+        if (UsesStorageCapacity(type))
+        {
+            int capacity = GetCapacity(type);
+            newAmount = Mathf.Min(newAmount, capacity);
+        }
+
+        if (newAmount == currentAmount)
+            return;
+        
         amounts[type] = newAmount;
         ResourceChanged?.Invoke(type, newAmount);
     }
@@ -66,5 +79,80 @@ public class CityResources : MonoBehaviour
             amounts[type] = 0;
 
         Add(startingResources);
+    }
+
+    private bool UsesStorageCapacity(ResourceType type)
+    {
+        switch (type)
+        {
+            case ResourceType.Gold:
+            case ResourceType.Wood:
+            case ResourceType.Stone:
+            case ResourceType.Food:
+            case ResourceType.Tools:
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+    public int GetCapacity(ResourceType type)
+    {
+        if (!UsesStorageCapacity(type))
+            return int.MaxValue;
+
+        if (townHallCapacity == null)
+            return 0;
+
+        return townHallCapacity.GetCapacity(type);
+    }
+
+    public void SetTownHallCapacity(TownHallResourceCapacity capacity)
+    {
+        if (townHallCapacity != null)
+        {
+            townHallCapacity.CapacitiesChanged -=
+                HandleCapacitiesChanged;
+        }
+
+        townHallCapacity = capacity;
+
+        if (townHallCapacity != null)
+        {
+            townHallCapacity.CapacitiesChanged +=
+                HandleCapacitiesChanged;
+        }
+
+        ClampAllResourcesToCapacity();
+    }
+
+    private void HandleCapacitiesChanged()
+    {
+        ClampAllResourcesToCapacity();
+    }
+
+    private void ClampAllResourcesToCapacity()
+    {
+        foreach (ResourceType type in Enum.GetValues(
+            typeof(ResourceType)
+        ))
+        {
+            if (!UsesStorageCapacity(type))
+                continue;
+
+            int currentAmount = Get(type);
+            int capacity = GetCapacity(type);
+            int clampedAmount = Mathf.Min(
+                currentAmount,
+                capacity
+            );
+
+            if (clampedAmount == currentAmount)
+                continue;
+
+            amounts[type] = clampedAmount;
+            ResourceChanged?.Invoke(type, clampedAmount);
+        }
     }
 }

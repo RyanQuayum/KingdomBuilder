@@ -21,9 +21,11 @@ MonoBehaviour:
   footprint: {x: 10, y: 6}
   requiresRoadAccess: 0
   unlockLevel: 1
+  maxInstances: 1
   buildCost: []
   storageProvided: []
-  productionPerTick: []
+  productionPerCycle: []
+  productionIntervalTicks: 1
   upkeepPerTick: []
   populationCapacity: 0
   happinessImpact: 0

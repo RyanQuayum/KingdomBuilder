@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [DisallowMultipleComponent]
@@ -13,6 +14,7 @@ public sealed class TownHallProgression : MonoBehaviour
     private int level = MinimumLevel;
 
     public int Level => level;
+    public event Action<int> LevelChanged;
 
     private void OnValidate()
     {
@@ -21,5 +23,20 @@ public sealed class TownHallProgression : MonoBehaviour
             MinimumLevel,
             MaximumLevel
         );
+    }
+
+    public void SetLevel(int newLevel)
+    {
+        int clampedLevel = Mathf.Clamp(
+            newLevel,
+            MinimumLevel,
+            MaximumLevel
+        );
+
+        if (level == clampedLevel)
+            return;
+
+        level = clampedLevel;
+        LevelChanged?.Invoke(level);
     }
 }
